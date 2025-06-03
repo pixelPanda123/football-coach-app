@@ -5,6 +5,7 @@ import '../../services/auth_service.dart';
 import '../coach/coach_dashboard.dart';
 import '../head_coach/head_coach_dashboard.dart';
 import '../student/student_dashboard.dart';
+import 'reset_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -149,7 +150,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 8),
+                
+                // Add Forgot Password Button
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ResetPasswordScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text('Forgot Password?'),
+                  ),
+                ),
+                const SizedBox(height: 16),
 
                 // Login Button
                 ElevatedButton(

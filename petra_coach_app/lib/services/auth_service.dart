@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 
 class AuthService extends ChangeNotifier {
@@ -90,6 +90,28 @@ class AuthService extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> resetPassword(String email) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 2));
+
+      // In a real app, this would send a reset link to the user's email
+      // For demo, we'll just check if it's a valid demo email
+      if (email == 'student@petra.com' || 
+          email == 'coach@petra.com' || 
+          email == 'headcoach@petra.com') {
+        return true;
+      }
       return false;
     } finally {
       _isLoading = false;
