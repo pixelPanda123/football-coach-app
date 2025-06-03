@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_constants.dart';
 import '../models/user_model.dart';
+import '../screens/profile/profile_screen.dart';
 
 class DashboardScaffold extends StatelessWidget {
   final UserModel user;
@@ -23,7 +24,20 @@ class DashboardScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        actions: actions,
+        actions: [
+          if (actions != null) ...actions!,
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfileScreen(user: user),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
