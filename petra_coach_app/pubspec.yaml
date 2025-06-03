@@ -50,6 +50,11 @@ dependencies:
   # Notifications
   flutter_local_notifications: ^16.3.0
 
+  # New dependencies for fee management
+  cloud_firestore: ^4.17.5
+  firebase_core: ^2.22.0
+  uuid: ^4.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

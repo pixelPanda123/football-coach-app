@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "370840649730",
+    "project_id": "petra-coach-app",
+    "storage_bucket": "petra-coach-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:370840649730:android:97d3bcfb9875e481e4671b",
+        "android_client_info": {
+          "package_name": "com.petrasports.petra_coach_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCy_c46EyhbIdFTUwinJPzWNptKTmuutIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,52 +1,92 @@
 class AttendanceRecord {
+  final String id;
   final String studentId;
+  final String studentName;
   final String batchId;
-  final String centerId;
   final DateTime date;
   final bool isPresent;
-  final String? notes;
-  final String markedBy;
-  final DateTime markedAt;
-  final Map<String, dynamic>? location;
+  final String markedById; // Coach or Head Coach ID who marked attendance
 
   AttendanceRecord({
+    required this.id,
     required this.studentId,
+    required this.studentName,
     required this.batchId,
-    required this.centerId,
     required this.date,
     required this.isPresent,
-    this.notes,
-    required this.markedBy,
-    required this.markedAt,
-    this.location,
+    required this.markedById,
   });
 
-  factory AttendanceRecord.fromJson(Map<String, dynamic> json) {
-    return AttendanceRecord(
-      studentId: json['studentId'] as String,
-      batchId: json['batchId'] as String,
-      centerId: json['centerId'] as String,
-      date: DateTime.parse(json['date'] as String),
-      isPresent: json['isPresent'] as bool,
-      notes: json['notes'] as String?,
-      markedBy: json['markedBy'] as String,
-      markedAt: DateTime.parse(json['markedAt'] as String),
-      location: json['location'] as Map<String, dynamic>?,
-    );
+  // Calculate attendance percentage for a list of records
+  static double calculateAttendancePercentage(List<AttendanceRecord> records) {
+    if (records.isEmpty) return 0;
+    final presentDays = records.where((record) => record.isPresent).length;
+    return (presentDays / records.length) * 100;
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'studentId': studentId,
-      'batchId': batchId,
-      'centerId': centerId,
-      'date': date.toIso8601String(),
-      'isPresent': isPresent,
-      'notes': notes,
-      'markedBy': markedBy,
-      'markedAt': markedAt.toIso8601String(),
-      'location': location,
-    };
+  // Create a copy of the record with some fields updated
+  AttendanceRecord copyWith({
+    String? id,
+    String? studentId,
+    String? studentName,
+    String? batchId,
+    DateTime? date,
+    bool? isPresent,
+    String? markedById,
+  }) {
+    return AttendanceRecord(
+      id: id ?? this.id,
+      studentId: studentId ?? this.studentId,
+      studentName: studentName ?? this.studentName,
+      batchId: batchId ?? this.batchId,
+      date: date ?? this.date,
+      isPresent: isPresent ?? this.isPresent,
+      markedById: markedById ?? this.markedById,
+    );
+  }
+}
+
+// Model to represent a batch for attendance
+class Batch {
+  final String id;
+  final String name;
+  final String center;
+  final List<String> studentIds;
+  final String coachId;
+
+  const Batch({
+    required this.id,
+    required this.name,
+    required this.center,
+    required this.studentIds,
+    required this.coachId,
+  });
+
+  // Demo batches for testing
+  static List<Batch> getDemoBatches() {
+    return [
+      Batch(
+        id: 'batch1',
+        name: 'Under-10',
+        center: 'Stadium of Hope, Khanapur',
+        studentIds: List.generate(20, (index) => 'student_${index + 1}'),
+        coachId: 'coach1',
+      ),
+      Batch(
+        id: 'batch2',
+        name: 'Under-13',
+        center: 'Stadium of Hope, Khanapur',
+        studentIds: List.generate(18, (index) => 'student_${index + 21}'),
+        coachId: 'coach1',
+      ),
+      Batch(
+        id: 'batch3',
+        name: 'Morning Batch',
+        center: 'Petra Sports Academy, Tellapur',
+        studentIds: List.generate(15, (index) => 'student_${index + 39}'),
+        coachId: 'coach2',
+      ),
+    ];
   }
 }
 
