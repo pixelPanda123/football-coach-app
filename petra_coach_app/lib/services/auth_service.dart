@@ -10,13 +10,16 @@ class AuthService extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _currentUser != null;
 
+  // Master password for resetting passwords
+  static const masterPassword = 'petra2024';
+
   Future<bool> login(String email, String password) async {
     try {
       _isLoading = true;
       notifyListeners();
 
       // TODO: Replace with actual API call
-      await Future.delayed(const Duration(seconds: 2)); // Simulate network delay
+      await Future.delayed(const Duration(seconds: 2));
 
       // Mock login - replace with actual authentication
       if (email == 'student@petra.com') {
@@ -117,5 +120,10 @@ class AuthService extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  // Method to verify master password
+  static bool verifyMasterPassword(String password) {
+    return password == masterPassword;
   }
 } 

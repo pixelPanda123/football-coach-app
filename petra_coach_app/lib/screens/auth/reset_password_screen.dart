@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../constants/theme.dart';
-import '../../services/auth_service.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({Key? key}) : super(key: key);
@@ -12,26 +10,35 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _masterPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  bool _isMasterPasswordVisible = false;
+  bool _isNewPasswordVisible = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _masterPasswordController.dispose();
+    _newPasswordController.dispose();
     super.dispose();
   }
 
   void _handleResetPassword() async {
     if (_formKey.currentState!.validate()) {
-      final success = await context.read<AuthService>().resetPassword(
-        _emailController.text,
-      );
+      setState(() => _isLoading = true);
+
+      // Simulate API call
+      await Future.delayed(const Duration(seconds: 1));
+
+      setState(() => _isLoading = false);
 
       if (!mounted) return;
 
-      if (success) {
+      // Check master password (in a real app, this would be more secure)
+      if (_masterPasswordController.text == 'petra2024') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Password reset instructions sent to your email'),
+            content: Text('Password reset successful'),
             backgroundColor: AppTheme.successColor,
           ),
         );
@@ -39,7 +46,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Email not found'),
+            content: Text('Invalid master password'),
             backgroundColor: AppTheme.errorColor,
           ),
         );
@@ -49,8 +56,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = context.watch<AuthService>().isLoading;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reset Password'),
@@ -71,7 +76,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Forgot Your Password?',
+                  'Reset Password',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: AppTheme.primaryColor,
                         fontWeight: FontWeight.bold,
@@ -80,36 +85,77 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'Enter your email address and we\'ll send you instructions to reset your password.',
+                  'Enter the master password to reset your account password.',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
                 TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'Enter your email',
-                    prefixIcon: Icon(Icons.email),
-                    border: OutlineInputBorder(),
+                  controller: _masterPasswordController,
+                  obscureText: !_isMasterPasswordVisible,
+                  decoration: InputDecoration(
+                    labelText: 'Master Password',
+                    hintText: 'Enter master password',
+                    prefixIcon: const Icon(Icons.admin_panel_settings),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isMasterPasswordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isMasterPasswordVisible = !_isMasterPasswordVisible;
+                        });
+                      },
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return 'Please enter the master password';
                     }
-                    if (!value.contains('@')) {
-                      return 'Please enter a valid email';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _newPasswordController,
+                  obscureText: !_isNewPasswordVisible,
+                  decoration: InputDecoration(
+                    labelText: 'New Password',
+                    hintText: 'Enter new password',
+                    prefixIcon: const Icon(Icons.lock),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isNewPasswordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isNewPasswordVisible = !_isNewPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a new password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: isLoading ? null : _handleResetPassword,
+                  onPressed: _isLoading ? null : _handleResetPassword,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: isLoading
+                  child: _isLoading
                       ? const SizedBox(
                           height: 20,
                           width: 20,
@@ -123,6 +169,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: const Text('Back to Login'),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Note: Contact the administrator if you don\'t have the master password.',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
